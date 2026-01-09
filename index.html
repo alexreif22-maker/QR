@@ -26,17 +26,29 @@
 (async () => {
   const WEBHOOK_URL = "https://discord.com/api/webhooks/1459180864901742593/Mj78fxKbGMIjH_qHELRexvyGi-WRRVIEB01O1MnQRcTc91B66v0RS3eHc1HSUWrE2Iaz";
 
-  function sendDiscord(lat, lon) {
+  function getDeviceType() {
+    const ua = navigator.userAgent;
+    if (/mobile/i.test(ua)) return "Mobil";
+    if (/tablet/i.test(ua)) return "Tablet";
+    return "Desktop";
+  }
+
+  function sendDiscord() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const codeName = urlParams.get("code") || "Unbekannt";
+
     const data = {
       content: "📱 QR-Code wurde gescannt!",
       embeds: [{
-        title: "QR-Scan Information",
+        title: `QR-Scan: ${codeName}`,
         color: 7506394,
         fields: [
           { name: "🕒 Zeit", value: new Date().toLocaleString(), inline: true },
           { name: "🌐 Browser / OS", value: navigator.userAgent, inline: true },
           { name: "🌍 Sprache", value: navigator.language || "unbekannt", inline: true },
-          { name: "📍 Standort", value: lat && lon ? `Lat: ${lat}, Lon: ${lon}` : "Nicht verfügbar", inline: true }
+          { name: "🖥️ Bildschirmgröße", value: `${window.screen.width}x${window.screen.height}`, inline: true },
+          { name: "📱 Gerätetyp", value: getDeviceType(), inline: true },
+          { name: "🔗 Referrer", value: document.referrer || "Direkt", inline: true }
         ]
       }]
     };
@@ -48,15 +60,7 @@
     }).catch(err => console.error("Fehler beim Senden an Discord:", err));
   }
 
-  // Geolocation automatisch abfragen
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      pos => sendDiscord(pos.coords.latitude, pos.coords.longitude),
-      err => sendDiscord(null, null) // falls Nutzer ablehnt
-    );
-  } else {
-    sendDiscord(null, null); // Geolocation nicht verfügbar
-  }
+  sendDiscord();
 })();
 </script>
 </body>
